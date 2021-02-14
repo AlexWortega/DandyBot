@@ -1,4 +1,4 @@
-﻿import time
+import time
 import sys
 import json
 from importlib import import_module
@@ -75,6 +75,7 @@ class Board:
         self.update(player.x, player.y)
 
     def add_player(self, player, x, y):
+        print(player.x,player.y)
         player.x, player.y = x, y
         self.has_player[x][y] = player
         self.update(x, y)
@@ -161,6 +162,8 @@ class Player:
 def start_game():
     def update():
         t = time.time()
+        inp = input()
+
         if board.play():
             dt = int((time.time() - t) * 1000)
             root.after(max(DELAY - dt, 0), update)
@@ -169,6 +172,11 @@ def start_game():
 
     root = tk.Tk()
     root.configure(background="black")
+    #fix bug on mac os(window doesnt appear)
+    root.overrideredirect(False)
+    root.wm_attributes("-alpha", 0.7)
+    root.wm_attributes("-topmost", "true")
+
     canvas = tk.Canvas(root, bg="black", highlightthickness=0)
     canvas.pack(side=tk.LEFT)
     label = tk.Label(root, font=("TkFixedFont",),
@@ -178,6 +186,8 @@ def start_game():
     game = json.loads(Path(filename).read_text())
     board = Board(game, canvas, label)
     root.after(0, update)
+
+
     root.mainloop()
 
 
